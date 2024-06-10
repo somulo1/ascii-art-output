@@ -1,11 +1,11 @@
 package main
 
 import (
+	"ascii-art-fs/functions"
+	"flag"
 	"fmt"
 	"os"
 	"strings"
-	"flag"
-	"ascii-art-fs/functions"
 )
 
 func main() {
@@ -13,8 +13,12 @@ func main() {
 		fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]\nEX: go run . --output=<fileName.txt> something standard")
 		return
 	}
-
-	stringInput := os.Args[2] // Reading the string argument entered
+	var stringInput string
+	if len(os.Args) > 2 {
+		stringInput = os.Args[2] // Reading the string argument entered
+	} else if len(os.Args) == 2 {
+		stringInput = os.Args[1]
+	}
 
 	if stringInput == "" {
 		return
@@ -34,9 +38,8 @@ func main() {
 		return
 	}
 	file = []byte(strings.Replace(string(file), "\r\n", "\n", -1))
-	var fileLine []string
 
-	fileLine = strings.Split(string(file), "\n")
+	fileLine := strings.Split(string(file), "\n")
 
 	link := ""
 	switch BannerFile {
@@ -53,22 +56,26 @@ func main() {
 		return
 	}
 
-    //Define flag that will be used to specify the output file
-	output := flag.String("output","output.txt","File that stores the output.")
+	//Define flag that will be used to specify the output file
+	output := flag.String("output", "output.txt", "File that stores the output.")
 	flag.Parse()
-	
-	 //Enforce the specified double dash format
-	 for _, arg := range os.Args {
-        if strings.HasPrefix(arg, "-output=") || arg == "-output" {
-            fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]\nEX: go run . --output=<fileName.txt> something standard")
-            return
-        }
-    }
+
+	//Enforce the specified double dash format
+	for i, arg := range os.Args {
+		if i == 1 {
+			if strings.HasPrefix(arg, "-output") || strings.HasPrefix(arg, "--output= ") || strings.HasPrefix(arg, "--output") && !strings.Contains(arg, "--output=") ||
+				strings.HasPrefix(arg, "-output") && !strings.HasSuffix(arg, ".txt") || strings.HasPrefix(arg, "--output") && !strings.HasSuffix(arg, ".txt") {
+				fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]\nEX: go run . --output=<fileName.txt> something standard")
+				return
+			}
+		}
+	}
 	asciiOutput := functions.AsciiArt(stringInput, fileLine)
 	error := os.WriteFile(*output, []byte(asciiOutput), 0644)
-	if error != nil{
-		fmt.Printf("Error:%v",error)
+	if error != nil {
+		fmt.Println("Error:", error)
+	} else {
+		fmt.Print(functions.AsciiArt(stringInput, fileLine))
 	}
 
-	fmt.Print(functions.AsciiArt(stringInput, fileLine))
 }
