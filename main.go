@@ -10,7 +10,7 @@ import (
 
 func main() {
 	if len(os.Args) > 4 || len(os.Args) < 2 {
-		fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]\nEX: go run . --output=<fileName.txt> something standard")
+		fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]\n\nEX: go run . --output=<fileName.txt> something standard")
 		return
 	}
 	var stringInput string
@@ -63,8 +63,11 @@ func main() {
 	//Enforce the specified double dash format
 	for i, arg := range os.Args {
 		if i == 1 {
-			if strings.HasPrefix(arg, "-output") || strings.HasPrefix(arg, "--output= ") || strings.HasPrefix(arg, "--output") && !strings.Contains(arg, "--output=") ||
-				strings.HasPrefix(arg, "-output") && !strings.HasSuffix(arg, ".txt") || strings.HasPrefix(arg, "--output") && !strings.HasSuffix(arg, ".txt") {
+			if !strings.HasSuffix(arg, ".txt") {
+				fmt.Println("Only .txt files are accepted!")
+				return
+			} else if strings.HasPrefix(arg, "-output") || strings.HasPrefix(arg, "--output= ") || strings.HasPrefix(arg, "--output") && !strings.Contains(arg, "--output=") ||
+				strings.HasPrefix(arg, "-output") && !strings.HasSuffix(arg, ".txt") || strings.HasPrefix(arg, "--output") {
 				fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]\nEX: go run . --output=<fileName.txt> something standard")
 				return
 			}
