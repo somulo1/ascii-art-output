@@ -9,25 +9,46 @@ import (
 )
 
 func main() {
-	if len(os.Args) > 4 || len(os.Args) < 2 {
+	// Define flag that will be used to specify the output file
+	output := flag.String("output", "output.txt", "File that stores the output.")
+	flag.Parse()
+
+	if len(flag.Args()) > 2 || len(flag.Args()) < 1 {
 		fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]\n\nEX: go run . --output=<fileName.txt> something standard")
 		return
 	}
-	var stringInput string
-	if len(os.Args) > 2 {
-		stringInput = os.Args[2] // Reading the string argument entered
-	} else if len(os.Args) == 2 {
-		stringInput = os.Args[1]
+
+	stringInput := flag.Args()[0]
+
+	// Variable to track if the flag was set
+	var nameSet bool
+	var flagSet bool = false
+
+	// Enforce the flag format to be used to be --output=<filename.txt>
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == "output" {
+			flagSet = true
+			result := strings.Replace(os.Args[1], *output, "", 1)
+			if !(result == "--output=") {
+				nameSet = true
+			}
+		}
+	})
+
+	if nameSet {
+		fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]\n\nEX: go run . --output=<fileName.txt> something standard")
+		return
 	}
 
-	if stringInput == "" {
+	if !(strings.HasSuffix(*output, ".txt")) {
+		fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]\n\nEX: go run . --output=<fileName.txt> something standard")
 		return
 	}
 
 	BannerFile := "standard.txt"
 
-	if len(os.Args) == 4 {
-		banner := strings.Replace(os.Args[3], ".txt", "", 1)
+	if len(flag.Args()) == 2 {
+		banner := strings.Replace(flag.Args()[1], ".txt", "", 1)
 		BannerFile = banner + ".txt"
 	}
 
@@ -56,29 +77,12 @@ func main() {
 		return
 	}
 
-	//Define flag that will be used to specify the output file
-	output := flag.String("output", "output.txt", "File that stores the output.")
-	flag.Parse()
-
-	//Enforce the specified double dash format
-	for i, arg := range os.Args {
-		if i == 1 {
-			if !strings.HasSuffix(arg, ".txt") {
-				fmt.Println("Only .txt files are accepted!")
-				return
-			} else if strings.HasPrefix(arg, "-output") || strings.HasPrefix(arg, "--output= ") || strings.HasPrefix(arg, "--output") && !strings.Contains(arg, "--output=") ||
-				strings.HasPrefix(arg, "-output") && !strings.HasSuffix(arg, ".txt") || strings.HasPrefix(arg, "--output") {
-				fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]\nEX: go run . --output=<fileName.txt> something standard")
-				return
-			}
-		}
-	}
+	//Write the results to the output file specified by user then print the results.
 	asciiOutput := functions.AsciiArt(stringInput, fileLine)
-	error := os.WriteFile(*output, []byte(asciiOutput), 0644)
+	error := os.WriteFile(*output, []byte(asciiOutput), 0o644)
 	if error != nil {
 		fmt.Println("Error:", error)
-	} else {
+	} else if flagSet == false {
 		fmt.Print(functions.AsciiArt(stringInput, fileLine))
 	}
-
 }
