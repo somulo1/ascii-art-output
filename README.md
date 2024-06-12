@@ -47,6 +47,9 @@ Additionally, the program can run with a single string argument even when the us
 ```   
 In this case, the result will be written to the default output file then automatically displayed on the terminal.
 
+### Note
+The main_test.go file tests the whole program while ascii_art_test.go tests the functions. To be able to run the main_test.go file successfully you have to first run the main.go file, with "hello" as your input string and "output.txt" as the value for the flag. This will help generate the output file which will be checked by the main_test.go file.
+
 ## Collaborators
 
 * **[Tomlee Abila](https://github.com/Tomlee-abila/)**
