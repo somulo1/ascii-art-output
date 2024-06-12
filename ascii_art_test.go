@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ascii-art-fs/functions"
+	"ascii-art-output/functions"
 	"fmt"
 	"os"
 	"strings"
@@ -101,7 +101,7 @@ func TestAsciiArtThinkertoy(t *testing.T) {
 
 	var fileLine []string
 
-	fileLine = strings.Split(string(file), "\r\n")
+	fileLine = strings.Split(string(file), "\n")
 
 	//create a map containing the input text as key and the path to its expected output as value
 	test_cases := map[string]string{
