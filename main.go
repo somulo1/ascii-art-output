@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ascii-art-fs/functions"
+	"ascii-art-output/functions"
 	"flag"
 	"fmt"
 	"os"
@@ -79,7 +79,7 @@ func main() {
 
 	//Write the results to the output file specified by user then print the results.
 	asciiOutput := functions.AsciiArt(stringInput, fileLine)
-	error := os.WriteFile(*output, []byte(asciiOutput), 0o644)
+	error := os.WriteFile(*output, []byte(asciiOutput), 0644)
 	if error != nil {
 		fmt.Println("Error:", error)
 	} else if flagSet == false {
