@@ -34,7 +34,7 @@ func main() {
 			}
 		}
 	})
-
+	// defining usage and error handling
 	if nameSet {
 		fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]\n\nEX: go run . --output=<fileName.txt> something standard")
 		return
